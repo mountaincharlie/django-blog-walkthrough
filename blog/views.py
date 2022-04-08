@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
+from django.http import HttpResponseRedirect
 from .models import Post
 from .forms import CommentForm
 
@@ -43,7 +44,7 @@ class PostDetail(View):
                 "comment_form": CommentForm()
             },
         )
-    
+
     def post(self, request, slug, *args, **kwargs):
         queryset = Post.objects.filter(status=1)
         post = get_object_or_404(queryset, slug=slug)
@@ -82,3 +83,20 @@ class PostDetail(View):
                 "comment_form": CommentForm()
             },
         )
+
+
+# likes class
+class PostLike(View):
+    # when the user clicks on the like button
+    def post(self, request, slug):
+        # getting the blog post
+        post = get_object_or_404(Post, slug=slug)
+        # checking if the post was already liked by checking the user.id exists
+        if post.likes.filter(id=request.user.id).exists():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+
+        # now want the template to refresh to show the change
+        return HttpResponseRedirect(reverse('post_detail', args=[slug]))
+

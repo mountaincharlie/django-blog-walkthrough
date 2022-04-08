@@ -41,9 +41,32 @@
                 <div class="row">
 
                     <div class="col-1">
-                        <strong class="text-secondary">
-                            <i class="far fa-heart"></i>
-                            {{ post.number_of_likes }}
+                        <!-- from for liking if the user is logged in -->
+                        <strong>
+                            {% if user.is_authenticated %}
+                                <!-- display inline, sends tp post_like url, uses slug argument POSt method -->
+                                <form class="d-inline" method="POST" action="{% url 'post_like' post.slug %}">
+                                    {% csrf_token %}
+                                    {% if liked %}
+                                        <button type="submit" name="blogpost_id" value="{{ post.slug }}" class="btn-like">
+                                            <!-- fas => 'fontAwesome solid' -->
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" name="blogpost_id" value="{{ post.slug }}" class="btn-like">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            <!-- if user not logged in -->
+                            {% else %}
+                                <span class="text-secondary">
+                                    <i class="far fa-heart"></i>
+                                </span>
+                            {% endif %}
+                            <span class="text-secondary">
+                                {{ post.number_of_likes }}
+                            </span>
                         </strong>
                     </div>
                     <div class="col-1">
@@ -94,6 +117,7 @@
                 {% else %}
 
                 <!-- only appears if the user is logged in -->
+                <!-- 'user' is from the User class imported in views.py -->
                 {% if user.is_authenticated %}
                     <h3>Leave a comment:</h3>
                     <p>Posting as: {{ user.username }}</p>

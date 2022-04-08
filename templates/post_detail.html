@@ -4,6 +4,24 @@
 
 {% load crispy_forms_tags %}
 
+<!-- alert message for successful comment submission -->
+{% if user.is_authenticated %}
+{% if commented %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <!-- alert-success => message tag type -->
+            <div class="alert alert-success alert-dismissable fade show" id="msg" role="alert">
+                Comment successfully submitted.
+                <!-- dismiss btn using bootstrap alert controls -->
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
 <div class="masthead">
     <div class="container">
         <div class="row g-0">
